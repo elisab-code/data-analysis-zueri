@@ -1,0 +1,60 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# ---------- Virtuelle Umgebungen ----------
+.venv/
+venv/
+env/
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+
+# ---------- Daten ----------
+data/raw/
+data/processed/
+
+# ---------- Zwischenergebnisse und Caches ----------
+results/cache/
+*.npy
+*.npz
+*.parquet
+*.pkl
+*.joblib
+
+# ---------- Geheimnisse und lokale Konfiguration ----------
+.env
+.env.*
+*.key
+secrets*
+
+# ---------- Logs ----------
+*.log
+logs/
+
+# ---------- Editor und Betriebssystem ----------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Claude Code ----------
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+docs/projektkontext.md
+
+# ---------- IU-Unterlagen ----------
+docs/iu/
+docs/submissions/
+*Aufgabenstellung*.pdf
+*Leitfaden*.pdf
+# Abgabe-PDFs 
+*_P[1-3]_A*.pdf
