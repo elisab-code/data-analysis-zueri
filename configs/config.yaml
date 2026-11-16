@@ -1,0 +1,33 @@
+# Central configuration. All paths are relative to the project root.
+# Values marked "TODO" are decided during the corresponding analysis step.
+
+seed: 42
+
+data:
+  raw_file: data/raw/data-zuerich_2026-10-29.csv
+  # SHA-256 of the analysed snapshot (downloaded 2026-10-29 10:48 CET)
+  sha256: 45ee2bc7d5c793d3ee32f2191d86ba8c5aa41551105811b3a432714de6efc5cc
+  # Live source: always returns the current state, so the checksum will differ
+  source_url: https://www.stadt-zuerich.ch/geodaten/download/Zueri_wie_neu
+  # Fixed snapshot (e.g. GitHub release asset); leave empty to use source_url
+  snapshot_url: ""
+  text_column: detail
+
+tfidf:
+  ngram_range: [1, 2]
+  min_df: null   # TODO
+  max_df: null   # TODO
+
+embeddings:
+  model: paraphrase-multilingual-MiniLM-L12-v2
+  batch_size: 64
+  cache_file: results/cache/embeddings.npy
+
+topics:
+  k_min: 5
+  k_max: 15
+  n_top_words: 10
+  seeds: null    # TODO: seeds for the stability check
+
+evaluation:
+  coherence: c_v
