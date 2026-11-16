@@ -101,7 +101,7 @@ pytest
 
 - [x] Datenquelle und Datensichtung
 - [x] Konzept
-- [ ] Umgebung und Datendownload
+- [x] Umgebung und Datendownload
 - [ ] Vorverarbeitung
 - [ ] Vektorisierung
 - [ ] Themenextraktion und Evaluation
