@@ -66,7 +66,36 @@ tests/        Tests
 
 ## Installation und Ausführung
 
-Folgt mit dem Pipeline-Code.
+Voraussetzung ist Python 3.12.
+
+```bash
+git clone https://github.com/elisab-code/data-analysis-zueri.git
+cd data-analysis-zueri
+py -3.12 -m venv .venv            # macOS/Linux: python3.12 -m venv .venv
+source .venv/Scripts/activate     # macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Daten:** Die Stadt Zürich erzeugt die CSV über ein Formular auf der
+[Datenseite](https://www.stadt-zuerich.ch/geodaten/download/Zueri_wie_neu), ein direkter
+Download per Skript ist daher nicht möglich. Die Datei wird als
+`data/raw/data-zuerich_2026-10-29.csv` abgelegt und anschließend geprüft:
+
+```bash
+python -m src.data.download
+```
+
+Das Skript vergleicht die Prüfsumme mit dem analysierten Datenstand vom 29.10.2026. Da der
+Datensatz täglich aktualisiert wird, weicht ein neuerer Download ab. Mit `--allow-mismatch`
+lässt er sich trotzdem verwenden, die Ergebnisse unterscheiden sich dann leicht.
+
+**Entwicklung und Tests:**
+
+```bash
+pip install -r requirements-dev.txt
+nbstripout --install              # entfernt Notebook-Ausgaben beim Commit
+pytest
+```
 
 ## Stand
 
