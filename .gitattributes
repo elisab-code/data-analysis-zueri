@@ -1,0 +1,12 @@
+# Normalize line endings in the repository
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.pdf binary
+
+# Strip notebook outputs on commit (filter is set up locally via `nbstripout --install`)
+*.ipynb filter=nbstripout
+*.zpln filter=nbstripout
+*.ipynb diff=ipynb
