@@ -6,7 +6,17 @@
 
 
 ## Snapshot
-- Datei: data/raw/data-zuerich.csv (nicht im Repo)
-- Download: 2026-10-28 14:24:46 (MEZ, UTC+1)
-- Größe: 63.812.407 Bytes (ca. 63,8 MB)
-- SHA-256: 6d0dc75a3419c9f2ee039143c3f8fa6fb20168651e6a059e2a37e2e83361aa73 *data/raw/data-zuerich.csv
+- Datei: data/raw/data-zuerich_2026-10-29.csv (nicht im Repo)
+- Metadaten: data/raw/metadaten.pdf (vom Portal, nicht im Repo)
+- Download: 2026-10-29 10:48:05 (MEZ, UTC+1)
+- Größe: 61.682.136 Bytes (ca. 61,7 MB)
+- SHA-256: 45ee2bc7d5c793d3ee32f2191d86ba8c5aa41551105811b3a432714de6efc5cc
+- Umfang: 79.159 Meldungen, 19 Spalten
+- Zeitraum (`requested_datetime`): 2013-03-14 15:16:15 bis 2026-10-28 15:25:28
+
+Prüfen: `sha256sum data/raw/data-zuerich_2026-10-29.csv`
+
+## Format
+- CSV, Trennzeichen Komma, UTF-8 mit BOM (einlesen mit `encoding="utf-8-sig"`)
+- Die Datei nicht in Excel öffnen und speichern: Das verändert Trennzeichen, Kodierung und Prüfsumme.
+- Bekannter Mangel der Quelle: Textfelder enthalten Mojibake (z. B. `Ã¼` statt `ü`), siehe `notebooks/01_data-review.ipynb`.
