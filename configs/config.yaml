@@ -9,8 +9,8 @@ data:
   sha256: 45ee2bc7d5c793d3ee32f2191d86ba8c5aa41551105811b3a432714de6efc5cc
   # Live source: always returns the current state, so the checksum will differ
   source_url: https://www.stadt-zuerich.ch/geodaten/download/Zueri_wie_neu
-  # Fixed snapshot (e.g. GitHub release asset); leave empty to use source_url
-  snapshot_url: ""
+  # Fixed snapshot as GitHub release asset
+  snapshot_url: https://github.com/elisab-code/data-analysis-zueri/releases/download/data-2026-10-29/data-zuerich_2026-10-29.csv
   text_column: detail
 
 tfidf:

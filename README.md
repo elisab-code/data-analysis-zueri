@@ -76,18 +76,18 @@ source .venv/Scripts/activate     # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Daten:** Die Stadt Zürich erzeugt die CSV über ein Formular auf der
-[Datenseite](https://www.stadt-zuerich.ch/geodaten/download/Zueri_wie_neu), ein direkter
-Download per Skript ist daher nicht möglich. Die Datei wird als
-`data/raw/data-zuerich_2026-10-29.csv` abgelegt und anschließend geprüft:
+**Daten:** Der analysierte Datenstand vom 29.10.2026 liegt als
+[Release](https://github.com/elisab-code/data-analysis-zueri/releases/tag/data-2026-10-29)
+vor. Das Skript lädt ihn nach `data/raw/` und prüft die Prüfsumme:
 
 ```bash
 python -m src.data.download
 ```
 
-Das Skript vergleicht die Prüfsumme mit dem analysierten Datenstand vom 29.10.2026. Da der
-Datensatz täglich aktualisiert wird, weicht ein neuerer Download ab. Mit `--allow-mismatch`
-lässt er sich trotzdem verwenden, die Ergebnisse unterscheiden sich dann leicht.
+Neuere Daten gibt es über das Formular auf der
+[Datenseite der Stadt Zürich](https://www.stadt-zuerich.ch/geodaten/download/Zueri_wie_neu).
+Da der Datensatz täglich aktualisiert wird, weicht ihre Prüfsumme ab. Mit `--allow-mismatch`
+lassen sie sich trotzdem verwenden, die Ergebnisse unterscheiden sich dann.
 
 **Entwicklung und Tests:**
 

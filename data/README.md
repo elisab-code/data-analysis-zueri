@@ -8,6 +8,7 @@
 ## Snapshot
 - Datei: data/raw/data-zuerich_2026-10-29.csv (nicht im Repo)
 - Metadaten: data/raw/metadaten.pdf (vom Portal, nicht im Repo)
+- Bereitstellung: CSV und Metadaten als Assets im Release [`data-2026-10-29`](https://github.com/elisab-code/data-analysis-zueri/releases/tag/data-2026-10-29); `python -m src.data.download` lädt die CSV und prüft die Prüfsumme
 - Download: 2026-10-29 10:48:05 (MEZ, UTC+1)
 - Größe: 61.682.136 Bytes (ca. 61,7 MB)
 - SHA-256: 45ee2bc7d5c793d3ee32f2191d86ba8c5aa41551105811b3a432714de6efc5cc
