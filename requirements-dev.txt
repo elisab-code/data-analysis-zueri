@@ -1,0 +1,5 @@
+# Development tools: tests, notebooks, notebook output stripping
+-r requirements.txt
+pytest==9.2.0
+ipykernel==7.4.0
+nbstripout==0.9.1

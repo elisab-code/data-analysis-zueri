@@ -1,0 +1,14 @@
+# Runtime dependencies (Python 3.12), pinned for reproducibility
+pandas==3.1.0
+numpy==2.5.4
+scikit-learn==1.9.1
+ftfy==6.3.1
+spacy==3.8.18
+de_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.8.0/de_core_news_sm-3.8.0-py3-none-any.whl
+sentence-transformers==6.2.0
+torch==2.14.1
+gensim==4.4.0
+matplotlib==3.11.2
+seaborn==0.13.2
+PyYAML==6.0.3
+requests==2.34.2
