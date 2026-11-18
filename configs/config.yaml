@@ -13,6 +13,31 @@ data:
   snapshot_url: https://github.com/elisab-code/data-analysis-zueri/releases/download/data-2026-10-29/data-zuerich_2026-10-29.csv
   text_column: detail
 
+preprocessing:
+  # Placeholder for e-mail addresses in report texts (personal data)
+  email_placeholder: ""     # e-mail addresses are removed
+  # Greeting and closing phrases removed in the light cleaning, matched
+  # case-insensitively as whole words. Candidates from the data review
+  # (number of reports containing the phrase); TODO: review the list.
+  phrases:
+    - guten tag              # 2229
+    - grüezi                 # 413
+    - hallo                  # 287
+    - sehr geehrte damen und herren
+    - besten dank für ihre meldung   # quoted replies of the city
+    - vielen dank im voraus
+    - besten dank im voraus
+    - vielen dank            # 1885
+    - besten dank            # 1336
+    - herzlichen dank
+    - danke                  # 3425
+    - freundliche grüsse     # 1430
+    - freundlichen grüssen
+    - beste grüsse
+    - liebe grüsse           # 89
+    - mfg                    # 256
+    - lg                     # 68
+
 tfidf:
   ngram_range: [1, 2]
   min_df: null   # TODO
