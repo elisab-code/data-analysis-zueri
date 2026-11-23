@@ -1,0 +1,60 @@
+"""Strong cleaning for TF-IDF: lowercase lemmas without stopwords and punctuation.
+
+Input are texts that already went through light_clean (encoding, HTML,
+e-mails, phrases, whitespace). Numbers are kept on purpose: they carry
+context such as "Tempo 30", tram lines or how long a problem has existed.
+"""
+
+from collections.abc import Iterable
+
+import spacy
+from spacy.language import Language
+from spacy.tokens import Token
+
+
+def load_nlp(model: str) -> Language:
+    """Load the spaCy model with only the components needed for lemmas.
+
+    The parser (sentence structure) and the named entity recognizer are not
+    needed and would make processing several times slower.
+    """
+    return spacy.load(model, disable=["parser", "ner"])
+
+
+def keep_token(token: Token, keep_words: frozenset[str]) -> bool:
+    """Decide whether a token is kept in the strongly cleaned text.
+
+    Kept: words and numbers, including compounds with hyphens ("E-Scooter",
+    "Tempo-30-Zone") and dates ("10.07.2024").
+    Removed: punctuation, whitespace, pure symbols and stopwords, except
+    stopwords whose lowercase lemma is in `keep_words` (e.g. "nicht", "seit").
+    """
+    if token.is_punct or token.is_space:
+        return False
+    # is_alpha would be too strict: it is False for "E-Scooter" or "Tempo-30-Zone".
+    if not any(char.isalnum() for char in token.text):
+        return False  # pure symbols such as "+" or "->"
+    if token.is_stop and token.lemma_.lower() not in keep_words:
+        return False
+    return True
+
+
+def strong_clean(
+    texts: Iterable[str],
+    nlp: Language,
+    keep_words: Iterable[str],
+    batch_size: int,
+) -> list[str]:
+    """Return one string of lowercase lemmas per input text, in the same order.
+
+    Example: "Die Lampen leuchten nicht." -> "lampe leuchten nicht"
+    (with "nicht" in keep_words).
+
+    nlp.pipe processes the texts in batches, which is much faster than
+    calling nlp(text) for every text in a loop.
+    """
+    keep = frozenset(word.lower() for word in keep_words)
+    return [
+        " ".join(token.lemma_.lower() for token in doc if keep_token(token, keep))
+        for doc in nlp.pipe(texts, batch_size=batch_size)
+    ]

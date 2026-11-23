@@ -38,6 +38,36 @@ preprocessing:
     - mfg                    # 256
     - lg                     # 68
 
+  # Strong cleaning (TF-IDF)
+  spacy_model: de_core_news_sm
+  spacy_batch_size: 1000
+  # spaCy stopwords that are kept because they carry meaning in reports.
+  # Compared with the lowercase lemma ("keine" -> "kein", "Jahren" -> "jahr").
+  # Counts: reports containing the phrase (data review).
+  keep_stopwords:
+    # negation: "leuchtet nicht mehr" (2567), "niemand", "nichts", "ohne"
+    - nicht
+    - kein
+    - nie
+    - niemand
+    - nichts
+    - ohne
+    # duration and repetition: "immer wieder" (1116), "immer noch" (978),
+    # "schon wieder" (384), "seit Jahren" (250), "bereits gemeldet"
+    - seit
+    - immer
+    - wieder
+    - noch
+    - mehr
+    - schon
+    - bereits
+    - oft
+    - lang
+    - lange
+    # time units: spaCy treats "Jahr" and "Tag" as stopwords ("Woche" is not)
+    - jahr
+    - tag
+
 tfidf:
   ngram_range: [1, 2]
   min_df: null   # TODO
