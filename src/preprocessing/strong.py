@@ -49,7 +49,7 @@ def strong_clean(
     """Return one string of lowercase lemmas per input text, in the same order.
 
     Example: "Die Lampen leuchten nicht." -> "lampe leuchten nicht"
-    (with "nicht" in keep_words). Lemmas are normalized with normalize_lemma;
+    (with "nicht" in keep_words). Lemmas are normalized with normalize_lemma.
     `lemma_fixes` maps wrong lemmas to the correct form (after ß -> ss).
 
     nlp.pipe processes the texts in batches, which is much faster than

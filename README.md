@@ -121,6 +121,26 @@ python -m src.preprocessing.pipeline
 Das Skript schreibt die bereinigten Texte nach `data/processed/reports.parquet` und legt
 in `data/processed/preview.csv` eine Stichprobe von 200 Meldungen zum Ansehen ab.
 
+**Vektorisierung** (beim ersten Lauf ca. 15 Minuten auf der CPU):
+
+```bash
+python -m src.vectorization.pipeline
+```
+
+Das Skript berechnet die Sentence Embeddings und speichert sie in `results/cache/`. Spätere
+Schritte laden sie von dort. Ändern sich die Texte oder das Modell, wird neu gerechnet. Der
+Vergleich der beiden Vektorisierungen steht in
+[notebooks/02_vectorization.ipynb](notebooks/02_vectorization.ipynb).
+
+Das Embedding-Modell
+[paraphrase-multilingual-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)
+(Lizenz Apache 2.0) liegt nicht im Repository. Beim ersten Lauf lädt das Skript es vom
+Hugging Face Hub herunter (ca. 460 MB, ohne Konto und kostenlos) und speichert es lokal unter
+`~/.cache/huggingface/`. Die Modellversion ist in [configs/config.yaml](configs/config.yaml)
+als Commit festgelegt (`revision`). Die Texte werden lokal verarbeitet und nicht übertragen.
+Liegt das Modell bereits im lokalen Speicher, läuft das Skript mit `HF_HUB_OFFLINE=1` auch
+ohne Internetverbindung.
+
 **Entwicklung und Tests:**
 
 ```bash

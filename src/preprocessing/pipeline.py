@@ -15,7 +15,7 @@ from src.preprocessing.strong import load_nlp, strong_clean
 
 logger = logging.getLogger(__name__)
 
-# Columns taken from the raw data; the text column is added from the config.
+# Columns taken from the raw data. The text column is added from the config.
 META_COLUMNS = ["service_request_id", "requested_datetime", "service_code", "interface_used"]
 
 
@@ -30,8 +30,8 @@ def prepare(df: pd.DataFrame, text_column: str, pre_cfg: dict, nlp: Language) ->
     Steps:
     1. drop reports without text
     2. repair the encoding of service_code (12 raw values -> 11 categories)
-    3. light cleaning; drop reports whose text is empty afterwards (only phrases)
-    4. strong cleaning; reports that are empty only here are kept, so that both
+    3. light cleaning, then drop reports whose light-cleaned text is empty (only phrases)
+    4. strong cleaning. Reports that are empty only here are kept, so that both
        topic methods work on the same set of reports
     """
     n_raw = len(df)

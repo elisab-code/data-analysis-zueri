@@ -23,7 +23,7 @@ preprocessing:
   email_placeholder: ""     # e-mail addresses are removed
   # Greeting and closing phrases removed in the light cleaning, matched
   # case-insensitively as whole words. Candidates from the data review
-  # (number of reports containing the phrase); TODO: review the list.
+  # (number of reports containing the phrase). TODO: review the list.
   phrases:
     - guten tag              # 2229
     - grüezi                 # 413
@@ -83,12 +83,21 @@ preprocessing:
     mülltonn: mülltonne        # 52 vs. 37
 
 tfidf:
+  # Single words and word pairs ("nicht mehr", "tempo 30")
   ngram_range: [1, 2]
-  min_df: null   # TODO
-  max_df: null   # TODO
+  # Minimum number of reports a term must occur in. Without a limit there are
+  # 491,060 terms, most of them typos or word pairs that occur only once.
+  # With 10 there are about 11,000 (2026-11-24).
+  min_df: 10
+  # Maximum share of reports. Safety net only: the most frequent term ("nicht")
+  # occurs in 15.9 % of the reports, so 0.5 removes nothing in this snapshot.
+  max_df: 0.5
 
 embeddings:
-  model: paraphrase-multilingual-MiniLM-L12-v2
+  # Multilingual model (German included), 384 dimensions, input limit 128 tokens
+  model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  # Fixed model version (commit on Hugging Face) for reproducibility
+  revision: e8f8c211226b894fcb81acc59f3b34ba3efd5f42
   batch_size: 64
   cache_file: results/cache/embeddings.npy
 
