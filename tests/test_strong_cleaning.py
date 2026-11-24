@@ -2,16 +2,13 @@
 
 import pytest
 
-from src.preprocessing.strong import keep_token, load_nlp, strong_clean
+from src.preprocessing.strong import keep_token, normalize_lemma, strong_clean
 
 KEEP_WORDS = ["nicht", "kein", "seit"]
 BATCH_SIZE = 2
 
 
-@pytest.fixture(scope="module")
-def nlp():
-    # Loading the model takes a few seconds, so it is shared by all tests in this file.
-    return load_nlp("de_core_news_sm")
+# The fixture `nlp` is defined in conftest.py.
 
 
 def clean_one(text, nlp, keep_words=KEEP_WORDS):
@@ -75,3 +72,20 @@ def test_keeps_order_and_length(nlp):
     assert len(result) == 3
     assert result[0] == "abfall"
     assert result[1] == ""
+
+
+@pytest.mark.parametrize(
+    ("lemma", "expected"),
+    [("Straße", "strasse"), ("Gruß", "gruss"), ("Lampe", "lampe"), ("velos", "velo")],
+)
+def test_normalize_lemma(lemma, expected):
+    assert normalize_lemma(lemma, {"velos": "velo"}) == expected
+
+
+def test_strong_clean_output_has_no_sharp_s(nlp):
+    assert "ß" not in clean_one("Die Strasse ist kaputt. Grüsse", nlp)
+
+
+def test_strong_clean_applies_lemma_fixes(nlp):
+    result = strong_clean(["Velos auf dem Trottoir"], nlp, [], 2, {"velos": "velo"})[0]
+    assert result.split()[0] == "velo"

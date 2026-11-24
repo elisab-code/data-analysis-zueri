@@ -44,17 +44,32 @@ def strong_clean(
     nlp: Language,
     keep_words: Iterable[str],
     batch_size: int,
+    lemma_fixes: dict[str, str] | None = None,
 ) -> list[str]:
     """Return one string of lowercase lemmas per input text, in the same order.
 
     Example: "Die Lampen leuchten nicht." -> "lampe leuchten nicht"
-    (with "nicht" in keep_words).
+    (with "nicht" in keep_words). Lemmas are normalized with normalize_lemma;
+    `lemma_fixes` maps wrong lemmas to the correct form (after ß -> ss).
 
     nlp.pipe processes the texts in batches, which is much faster than
     calling nlp(text) for every text in a loop.
     """
     keep = frozenset(word.lower() for word in keep_words)
+    fixes = lemma_fixes or {}
     return [
-        " ".join(token.lemma_.lower() for token in doc if keep_token(token, keep))
+        " ".join(
+            normalize_lemma(token.lemma_, fixes) for token in doc if keep_token(token, keep)
+        )
         for doc in nlp.pipe(texts, batch_size=batch_size)
     ]
+
+
+def normalize_lemma(lemma: str, lemma_fixes: dict[str, str]) -> str:
+    """Lowercase, Swiss spelling and manual corrections for known lemmatizer errors.
+
+    The model is trained on German newspaper texts: it turns Swiss "ss" into "ß"
+    ("Strasse" -> "straß") and does not know some Swiss words ("Velos" -> "velos").
+    """
+    lemma = lemma.lower().replace("ß", "ss")
+    return lemma_fixes.get(lemma, lemma)

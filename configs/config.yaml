@@ -12,6 +12,11 @@ data:
   # Fixed snapshot as GitHub release asset
   snapshot_url: https://github.com/elisab-code/data-analysis-zueri/releases/download/data-2026-10-29/data-zuerich_2026-10-29.csv
   text_column: detail
+  # Output of the preprocessing pipeline (generated, not in the repo)
+  processed_file: data/processed/reports.parquet
+  # Small random sample of the processed data as CSV, for reading in an editor
+  preview_file: data/processed/preview.csv
+  preview_size: 200
 
 preprocessing:
   # Placeholder for e-mail addresses in report texts (personal data)
@@ -67,6 +72,15 @@ preprocessing:
     # time units: spaCy treats "Jahr" and "Tag" as stopwords ("Woche" is not)
     - jahr
     - tag
+
+  # Corrections for lemmatizer errors (applied after lowercasing and ß -> ss).
+  # Counts in the processed data before the correction (2026-11-23).
+  lemma_fixes:
+    strass: strasse            # 1338 vs. 3200 "strasse"
+    strassen: strasse          # 29
+    velos: velo                # 1448 vs. 2745 "velo"
+    schrottvelos: schrottvelo  # 75 vs. 424
+    mülltonn: mülltonne        # 52 vs. 37
 
 tfidf:
   ngram_range: [1, 2]
