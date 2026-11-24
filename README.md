@@ -33,6 +33,29 @@ Die Rohdaten liegen nicht im Repository. Datenstand und Prüfsumme sind in
 - Viele gleichlautende Texte sind keine Duplikate, sondern eigenständige Kurzmeldungen wie
   „Abfall“. Sie werden daher nicht entfernt.
 
+## Vorverarbeitung
+
+| Schritt | Meldungen |
+|---|---|
+| Rohdaten | 79.159 |
+| ohne Text entfernt | −2 |
+| nach leichter Bereinigung leer (nur Grussformeln) entfernt | −21 |
+| **verarbeitet** | **79.136** |
+
+- **Leichte Bereinigung** (für Sentence Embeddings): Kodierung reparieren, Zeilenumbrüche
+  (`<br/>`) entfernen, E-Mail-Adressen entfernen, Grussformeln entfernen, Leerraum vereinheitlichen.
+- **Starke Bereinigung** (für TF-IDF): zusätzlich Lemmatisierung mit spaCy, Stoppwörter und
+  Satzzeichen entfernen. Zahlen bleiben erhalten („Tempo 30“, „seit 3 Wochen“), ebenso
+  Verneinungen und Zeitangaben wie „nicht“, „kein“, „seit“ und „wieder“.
+- 48 Meldungen bestehen nur aus Stoppwörtern und sind nach der starken Bereinigung leer. Sie
+  bleiben im Datensatz, damit beide Themenverfahren dieselben Meldungen auswerten.
+- Das spaCy-Modell ist auf Texten aus deutschen Zeitungen trainiert und kennt Schweizer
+  Schreibweisen nur teilweise. Deshalb wird „ß“ in den Lemmata zu „ss“, und häufige
+  Fehllemmata werden in [configs/config.yaml](configs/config.yaml) korrigiert (`lemma_fixes`,
+  z. B. „velos“ → „velo“).
+- Die Kategorie `service_code` hat nach der Kodierungsreparatur 11 Werte. Das
+  Kategoriensystem hat sich über die Jahre verändert.
+
 ## Vorgehen
 
 ```mermaid
@@ -89,6 +112,15 @@ Neuere Daten gibt es über das Formular auf der
 Da der Datensatz täglich aktualisiert wird, weicht ihre Prüfsumme ab. Mit `--allow-mismatch`
 lassen sie sich trotzdem verwenden, die Ergebnisse unterscheiden sich dann.
 
+**Vorverarbeitung** (ca. 2 Minuten):
+
+```bash
+python -m src.preprocessing.pipeline
+```
+
+Das Skript schreibt die bereinigten Texte nach `data/processed/reports.parquet` und legt
+in `data/processed/preview.csv` eine Stichprobe von 200 Meldungen zum Ansehen ab.
+
 **Entwicklung und Tests:**
 
 ```bash
@@ -102,7 +134,7 @@ pytest
 - [x] Datenquelle und Datensichtung
 - [x] Konzept
 - [x] Umgebung und Datendownload
-- [ ] Vorverarbeitung
+- [x] Vorverarbeitung
 - [ ] Vektorisierung
 - [ ] Themenextraktion und Evaluation
 - [ ] Ergebnisse und Diskussion
