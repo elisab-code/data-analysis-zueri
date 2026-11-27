@@ -89,3 +89,10 @@ def test_strong_clean_output_has_no_sharp_s(nlp):
 def test_strong_clean_applies_lemma_fixes(nlp):
     result = strong_clean(["Velos auf dem Trottoir"], nlp, [], 2, {"velos": "velo"})[0]
     assert result.split()[0] == "velo"
+
+
+def test_english_words_keep_their_text(nlp):
+    # The German model lemmatizes many English words to "--".
+    result = clean_one("The street lamp is broken since two weeks", nlp)
+    assert "--" not in result.split()
+    assert "street" in result.split()

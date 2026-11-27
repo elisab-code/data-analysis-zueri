@@ -59,10 +59,21 @@ def strong_clean(
     fixes = lemma_fixes or {}
     return [
         " ".join(
-            normalize_lemma(token.lemma_, fixes) for token in doc if keep_token(token, keep)
+            normalize_lemma(lemma_or_text(token), fixes) for token in doc if keep_token(token, keep)
         )
         for doc in nlp.pipe(texts, batch_size=batch_size)
     ]
+
+
+def lemma_or_text(token: Token) -> str:
+    """The lemma of the token, or its text if the lemma has no letter or digit.
+
+    The German model gives many English words the lemma "--" (e.g. "the", "is").
+    Such lemmas would merge unrelated words into one term.
+    """
+    if any(char.isalnum() for char in token.lemma_):
+        return token.lemma_
+    return token.text
 
 
 def normalize_lemma(lemma: str, lemma_fixes: dict[str, str]) -> str:
