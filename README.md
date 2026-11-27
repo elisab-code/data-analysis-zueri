@@ -141,6 +141,17 @@ als Commit festgelegt (`revision`). Die Texte werden lokal verarbeitet und nicht
 Liegt das Modell bereits im lokalen Speicher, läuft das Skript mit `HF_HUB_OFFLINE=1` auch
 ohne Internetverbindung.
 
+**Themenextraktion** (ca. 1–2 Minuten):
+
+```bash
+python -m src.topics.pipeline            # Themenzahl aus der Config
+python -m src.topics.pipeline --k 12     # andere Themenzahl
+```
+
+Das Skript extrahiert Themen mit NMF (auf TF-IDF) und KMeans (auf den Embeddings) und schreibt
+pro Verfahren eine Tabelle mit Themenwörtern und Anteilen nach `results/tables/`. Ein erster
+Blick auf die Themen steht in [notebooks/03_topics.ipynb](notebooks/03_topics.ipynb).
+
 **Entwicklung und Tests:**
 
 ```bash

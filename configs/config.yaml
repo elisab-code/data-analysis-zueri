@@ -101,11 +101,30 @@ embeddings:
   batch_size: 64
   cache_file: results/cache/embeddings.npy
 
+results:
+  # Topic assignment per report (contains report ids, not in the repo)
+  assignments_file: results/cache/topics.parquet
+  # Topic words and shares (no report texts, in the repo)
+  tables_dir: results/tables
+
 topics:
+  # Range of the k scan (number of topics)
   k_min: 5
   k_max: 15
+  # Number of topics for the first look, before the k scan
+  k_initial: 10
   n_top_words: 10
+  # Example reports per topic in the notebook
+  n_examples: 5
   seeds: null    # TODO: seeds for the stability check
+  nmf:
+    # nndsvda: deterministic start from a matrix decomposition (SVD), recommended
+    # by scikit-learn for sparse data. TODO: revisit for the stability check.
+    init: nndsvda
+    max_iter: 500
+  kmeans:
+    # Number of runs with different start centers, the best one is kept
+    n_init: 10
 
 evaluation:
   coherence: c_v
