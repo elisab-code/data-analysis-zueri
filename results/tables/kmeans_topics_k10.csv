@@ -1,11 +1,11 @@
-topic,reports,share,words
-5,14006,0.17698645369995955,"nicht, auto, strasse, fahren, fussgänger, trottoir, gefährlich, velo, richtung, kein"
-0,11849,0.149729579458148,"tafel, schrottvelo, velo, verkleben, tigermücke, mobiliar, schräg, matratze, littering, kaputtes"
-8,11705,0.14790992721391022,"seit, nicht, woche, stehen, schon, noch, wieder, bitte, liegen, immer"
-4,10468,0.13227860897695107,"abfall, illegal, müll, liegen, entsorgen, container, abfalleimer, immer, seit, wieder"
-6,10065,0.12718610998786897,"defekt, nicht, loch, kaputt, fehlen, tafel, beschädigen, boden, seit, liegen"
-3,6500,0.08213708046906591,"defekt, dunkel, nicht, lampe, strassenlampe, beleuchtung, leuchten, licht, lichtsignal, ampel"
-1,4269,0.053945107157298826,"wasser, laufen, brunnen, nicht, verstopfen, regen, abfluss, versprayt, hydrant, wasser laufen"
-9,3791,0.047904872624342905,"baum, nicht, wachsen, weg, pflanze, liegen, wald, noch, ast, seit"
-7,3502,0.044252931661949046,"graffiti, graffitis, entfernen, grafitti, wand, mauer, grafiti, fcz, bitte, kleber"
-2,2981,0.03766932875050546,"möbel, sofa, stuhl, entsorgen, sessel, tisch, bürostuhl, trottoir, teppich, illegal"
+topic,reports,share,words,duration,repetition,danger
+5,14006,0.17698645369995955,"auto, strasse, velo, fahren, fussgänger, trottoir, gefährlich, richtung, stehen, fahrzeug",0.10095673282878766,0.06961302299014709,0.18827645294873627
+0,11849,0.149729579458148,"schrottvelo, tafel, velo, verkleben, tigermücke, sperrmüll, mobiliar, schräg, kaputt, matratze",0.005232509072495569,0.007426787070638872,0.0077643683011224575
+8,11705,0.14790992721391022,"stehen, liegen, velo, entsorgen, karton, entfernen, fehlen, trottoir, abholen, schild",0.25519008970525414,0.0541648868005126,0.022298163178129004
+4,10468,0.13227860897695107,"abfall, illegal, abfalleimer, entsorgen, liegen, container, abfallhaufen, deponieren, abfallentsorgung, abfallsack",0.0811998471532289,0.07164692395873137,0.006973633931983187
+6,10065,0.12718610998786897,"defekt, loch, fehlen, kaputt, tafel, beschädigen, boden, liegen, gefährlich, velo",0.06855439642324888,0.017585692995529062,0.09766517635370095
+3,6500,0.08213708046906591,"lampe, defekt, dunkel, beleuchtung, leuchten, licht, lichtsignal, strassenbeleuchtung, ampel, brennen",0.07307692307692308,0.017538461538461537,0.03661538461538461
+1,4269,0.053945107157298826,"wasser, laufen, brunnen, verstopfen, regen, abfluss, versprayt, hydrant, wasser laufen, stark",0.08807683298196299,0.038416490981494494,0.05106582337784024
+9,3791,0.047904872624342905,"baum, ast, wachsen, pflanze, weg, liegen, wald, hängen, baumscheibe, trottoir",0.08968609865470852,0.03587443946188341,0.058823529411764705
+7,3502,0.044252931661949046,"graffiti, entfernen, wand, mauer, fcz, kleber, fcz graffiti, vandalismus, graffiti mauer, graffiti entfernen",0.03198172472872644,0.01684751570531125,0.003997715591090805
+2,2981,0.03766932875050546,"möbel, sofa, stuhl, entsorgen, sessel, tisch, bürostuhl, trottoir, teppich, illegal",0.06340154310634015,0.00872190540087219,0.0036900369003690036

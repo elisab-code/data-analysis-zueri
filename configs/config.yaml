@@ -161,6 +161,67 @@ tfidf:
   # Maximum share of reports. Safety net only: the most frequent term ("nicht")
   # occurs in 15.9 % of the reports, so 0.5 removes nothing in this snapshot.
   max_df: 0.5
+  # Words that are not used as TF-IDF terms. They occur with every kind of
+  # object, so NMF would build topics from them that say nothing about the
+  # object ("seit woche"). A term is removed if it contains one of these words:
+  # "seit" and "stehen seit" are removed, "stehen" is kept.
+  # The words stay in text_strong, where the state markers find them.
+  # Shares: reports containing the word (2026-11-27).
+  exclude_words:
+    # how a problem is described: negation, duration, repetition.
+    # Includes all keep_stopwords of the preprocessing.
+    state:
+      - nicht        # 15.9 %
+      - kein
+      - nie
+      - niemand
+      - nichts
+      - ohne
+      - seit         # 9.6 %
+      - immer
+      - wieder
+      - noch
+      - mehr
+      - schon
+      - bereits
+      - oft
+      - lang
+      - lange
+      - jahr
+      - tag          # a graffiti "Tag" only in about 36 reports, plural "tags" stays
+      - woche        # 4.5 %
+      - monat
+      - letzter
+      - regelmässig
+      - bleiben
+    # about the report itself or filler words, not about the problem
+    meta:
+      - bitte        # 6.6 %
+      - sehen
+      - foto
+      - bild
+      - melden
+      - meldung
+      - zürich
+      - stadt
+      - stelle
+      - ort
+      - situation
+      - mal
+      - mehrere
+      - ca.
+      - ca
+      - einfach
+      - direkt
+      - fast
+      - scheinen
+      - finden
+      - befinden
+      - neu
+      - alt
+  # Remove terms that consist only of numbers ("2", "10 12"). Word pairs with
+  # a number and a word are kept ("tempo 30", "tram 4").
+  exclude_numbers: true
 
 embeddings:
   # Multilingual model (German included), 384 dimensions, input limit 128 tokens
@@ -194,6 +255,36 @@ topics:
   kmeans:
     # Number of runs with different start centers, the best one is kept
     n_init: 10
+
+# State markers: how a report describes its problem, independent of the object.
+# Regular expressions on text_strong (lowercase lemmas). A report has a state if
+# one of its patterns matches. "wieder" alone is not counted, it is too vague
+# ("wieder voll", "wieder montiert"). Shares: reports matching (2026-11-27).
+# All patterns together: duration 9.5 %, repetition 3.9 %, danger 6.0 %.
+states:
+  duration:
+    - '\bseit\b(?: \S+){0,3}? (?:stunde|tag|woche|monat|jahr)\b'   # "seit 3 woche", 6.8 %
+    - '\bseit (?:19|20)\d\d\b'          # "seit 2023", 0.02 %
+    - '\bseit lange?\b'                 # "seit langem", 0.7 %
+    - '\bimmer noch\b'                  # 1.2 %
+    - '\bnoch immer\b'                  # 0.3 %
+    - '\bschon lange?\b'                # 0.6 %
+  repetition:
+    - '\bimmer wieder\b'                # 1.4 %
+    - '\bschon wieder\b'                # 0.5 %
+    - '\bmal wieder\b'                  # 0.2 %
+    - '\bwieder mal\b'                  # 0.2 %
+    - '\berneut\b'                      # 0.4 %
+    - '\bregelmässig\b'                 # 1.2 %
+    - '\bwiederholt\b'                  # 0.2 %
+  danger:
+    - '\bgefährlich\w*'                 # 3.3 %
+    - '\b\w*gefahr\b'                   # "gefahr", "unfallgefahr", not "gefahrlos", 1.7 %
+    - '\bgefahren(?:stelle?|quelle|potential)\b'   # 0.05 %
+    - '\bgefährd\w*'                    # "gefährden", "gefährdung", 0.3 %
+    - '\b\w*unfall\w*'                  # "unfall", "velounfall", "verunfallen", 0.8 %
+    - '\b\w*sicherheit(?:srisiko|srelevant)?\b'    # not "sicherheitslinie", 0.6 %
+    - '\bunsicher\w*'                   # 0.07 %
 
 evaluation:
   coherence: c_v

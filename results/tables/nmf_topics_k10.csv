@@ -1,12 +1,12 @@
-topic,reports,share,words
-7,37381,0.4723640315406389,"nicht, mehr, nicht mehr, noch, immer, wieder, strasse, bitte, sehen, kein"
-2,12680,0.1602304892842701,"seit, woche, stehen, seit woche, liegen, trottoir, tag, stehen seit, schon, monat"
-5,5436,0.06869187221997573,"illegal, entsorgung, entsorgen, illegal entsorgung, entsorgt, illegal entsorgt, illegal entsorgen, abfallentsorgung, illegal abfallentsorgung, müll"
-0,5017,0.06339718964820057,"abfall, abfall trottoir, deponieren, liegen, abfall deponieren, abfall strasse, entsorgt abfall, abfall liegen, abfall entsorgen, baumscheibe"
-8,4719,0.05963152042054185,"tafel, verkleben, schräg, tafel schräg, tafel verkleben, verdrehen, hv, abgedrehen, hv tafel, signal"
-4,4196,0.05302264456126163,"defekt, strassenlampe, strassenlatern, strassenlampe defekt, strassenbeleuchtung, strassenlatern defekt, lampe, lamp, beleuchtung, lamp defekt"
-9,3839,0.04851142337242216,"velo, kaputtes, kaputtes velo, defektes velo, defektes, velo stehen, stehen, kaputt, gefährlich, velo liegen"
-1,2839,0.03587494945410433,"graffiti, fcz, fcz graffiti, entfernen, mauer, wand, kleber, graffiti mauer, graffiti wand, graffiti entfernen"
-6,1266,0.015997775980590375,"möbel, entsorgen, möbel entsorgen, möbel abfall, trottoir, entsorgt möbel, möbel trottoir, deponieren, matratze, möbel deponieren"
-3,597,0.007543974929235746,"schrottvelo, weg, deponieren, schrottvelo stehen, entsorgen, immer noch, noch, immer, haufen, 2"
--1,1166,0.014734128588758593,(no topic)
+topic,reports,share,words,duration,repetition,danger
+8,44943,0.5679210473109584,"trottoir, liegen, strasse, stehen, loch, baum, abfall trottoir, fehlen, weg, karton",0.10003782569031885,0.04289878290278797,0.08312751707718666
+0,5797,0.07325363930448847,"abfall, deponieren, abfall trottoir, abfall deponieren, abfall liegen, abfall strasse, abfall entsorgen, liegen, illegal abfall, liegen abfall",0.0724512678971882,0.06417112299465241,0.006037605658099017
+5,5454,0.06891932875050547,"velo, kaputt, stehen, kaputt velo, velo stehen, defekt velo, velo liegen, herrenlos, anketten, weg",0.2192885955262193,0.039237257059039236,0.12284561789512284
+7,5226,0.06603821269712899,"tafel, verkleben, schräg, tafel verkleben, tafel schräg, verdrehen, abdrehen, sichtbar, hv, hv tafel",0.03539992345962495,0.013011863758132415,0.012629161882893225
+4,4397,0.05556257581884351,"illegal, entsorgen, illegal entsorgen, entsorgung, entsorgen abfall, abfallentsorgung, illegal abfallentsorgung, illegal entsorgung, sperrmüll, illegal abfall",0.06982033204457584,0.06527177621105298,0.007050261541960427
+1,3693,0.04666649818034776,"graffiti, entfernen, fcz, fcz graffiti, mauer, wand, graffiti entfernen, graffiti mauer, unterführung, kleber",0.03330625507717303,0.017871649065800164,0.003249390739236393
+9,3653,0.046161039223615044,"lampe, lampe defekt, leuchten, brennen, funktionieren, kaputt, dunkel, lampe leuchten, lampe brennen, lampe funktionieren",0.10238160416096359,0.019983575143717493,0.021352313167259787
+2,2826,0.0357106752931662,"defekt, lampe defekt, defekt velo, strassenbeleuchtung, beleuchtung, kandelaber, strassenbeleuchtung defekt, leuchtmittel, led, defekt lampe",0.08563340410474168,0.01875442321302194,0.041401273885350316
+6,984,0.012434290335624747,"möbel, möbel abfall, möbel entsorgen, deponieren, entsorgen möbel, möbel trottoir, entsorgen, abfall möbel, möbel deponieren, matratze",0.05894308943089431,0.041666666666666664,0.003048780487804878
+3,655,0.00827689041649818,"schrottvelo, schrottvelo stehen, weg, stehen, deponieren, rum, gemeldet, entsorgen, haufen, markieren",0.051908396946564885,0.0,0.0
+-1,1508,0.019055802668823292,(no topic),0.03978779840848806,0.013925729442970823,0.001326259946949602

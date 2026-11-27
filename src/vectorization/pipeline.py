@@ -28,8 +28,19 @@ def tfidf_from_config(reports: pd.DataFrame, cfg: dict):
     """Build the TF-IDF matrix with the parameters from the config."""
     tfidf_cfg = cfg["tfidf"]
     return build_tfidf(
-        reports["text_strong"], tfidf_cfg["ngram_range"], tfidf_cfg["min_df"], tfidf_cfg["max_df"]
+        reports["text_strong"],
+        tfidf_cfg["ngram_range"],
+        tfidf_cfg["min_df"],
+        tfidf_cfg["max_df"],
+        excluded_words(cfg),
+        tfidf_cfg.get("exclude_numbers", False),
     )
+
+
+def excluded_words(cfg: dict) -> list[str]:
+    """All words from the groups in tfidf.exclude_words (state, meta)."""
+    groups = cfg["tfidf"].get("exclude_words") or {}
+    return [word for group in groups.values() for word in group]
 
 
 def embeddings_from_config(reports: pd.DataFrame, cfg: dict):

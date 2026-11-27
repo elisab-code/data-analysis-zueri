@@ -4,8 +4,9 @@ Run from the project root after the vectorization pipeline:
     python -m src.topics.pipeline            # k from the config (k_initial)
     python -m src.topics.pipeline --k 12
 
-Writes one table per method (topic words and shares) to results/tables/ and
-the topic of every report to results/cache/topics.parquet.
+Writes one table per method to results/tables/ (topic words, share of
+reports, share of reports with each state marker) and the topic and state
+markers of every report to results/cache/topics.parquet.
 """
 
 import argparse
@@ -16,6 +17,7 @@ import pandas as pd
 from src.config import load_config, project_path
 from src.topics.kmeans import fit_kmeans
 from src.topics.nmf import assign_topics, fit_nmf
+from src.topics.states import state_markers, topic_states
 from src.topics.words import class_tfidf, top_terms, topic_table
 from src.vectorization.pipeline import embeddings_from_config, load_processed, tfidf_from_config
 
@@ -23,7 +25,11 @@ logger = logging.getLogger(__name__)
 
 
 def extract_topics(reports: pd.DataFrame, cfg: dict, k: int) -> dict:
-    """Fit both methods with k topics and return labels, topic words and tables."""
+    """Fit both methods with k topics and return labels, topic words and tables.
+
+    The tables contain one row per topic with its words, its share of the
+    reports and the share of its reports with each state marker.
+    """
     topics_cfg = cfg["topics"]
     n_words = topics_cfg["n_top_words"]
 
@@ -42,6 +48,9 @@ def extract_topics(reports: pd.DataFrame, cfg: dict, k: int) -> dict:
     kmeans_words = top_terms(class_tfidf(reports["text_strong"], kmeans_labels, k, vectorizer), terms, n_words)
     logger.info("KMeans: %d iterations", kmeans_model.n_iter_)
 
+    markers = state_markers(reports["text_strong"], cfg["states"])
+    logger.info("State markers (share of all reports): %s", markers.mean().round(3).to_dict())
+
     return {
         "vectorizer": vectorizer,
         "tfidf": tfidf,
@@ -49,11 +58,17 @@ def extract_topics(reports: pd.DataFrame, cfg: dict, k: int) -> dict:
         "nmf_model": nmf_model,
         "nmf_weights": nmf_weights,
         "nmf_labels": nmf_labels,
-        "nmf_table": topic_table(nmf_labels, nmf_words),
+        "nmf_table": with_states(topic_table(nmf_labels, nmf_words), nmf_labels, markers),
         "kmeans_model": kmeans_model,
         "kmeans_labels": kmeans_labels,
-        "kmeans_table": topic_table(kmeans_labels, kmeans_words),
+        "kmeans_table": with_states(topic_table(kmeans_labels, kmeans_words), kmeans_labels, markers),
+        "markers": markers,
     }
+
+
+def with_states(table: pd.DataFrame, labels, markers: pd.DataFrame) -> pd.DataFrame:
+    """Add the share of reports with each state marker to a topic table."""
+    return table.merge(topic_states(labels, markers), on="topic", how="left")
 
 
 def main() -> int:
@@ -79,7 +94,7 @@ def main() -> int:
             "nmf_topic": result["nmf_labels"],
             "kmeans_topic": result["kmeans_labels"],
         }
-    )
+    ).join(result["markers"])
     path = project_path(cfg["results"]["assignments_file"])
     path.parent.mkdir(parents=True, exist_ok=True)
     assignments.to_parquet(path, index=False)

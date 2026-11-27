@@ -51,8 +51,12 @@ Die Rohdaten liegen nicht im Repository. Datenstand und Prüfsumme sind in
   bleiben im Datensatz, damit beide Themenverfahren dieselben Meldungen auswerten.
 - Das spaCy-Modell ist auf Texten aus deutschen Zeitungen trainiert und kennt Schweizer
   Schreibweisen nur teilweise. Deshalb wird „ß“ in den Lemmata zu „ss“, und häufige
-  Fehllemmata werden in [configs/config.yaml](configs/config.yaml) korrigiert (`lemma_fixes`,
-  z. B. „velos“ → „velo“).
+  Fehllemmata und Tippfehler werden in [configs/config.yaml](configs/config.yaml) korrigiert
+  (`lemma_fixes`, z. B. „velos“ → „velo“, „grafitti“ → „graffiti“).
+- Synonyme, die dasselbe Ding bezeichnen, werden auf ein Wort abgebildet (`synonyms`, z. B.
+  „müll“ und „littering“ → „abfall“, „fahrrad“ → „velo“). Zusammensetzungen behalten ihr
+  Grundwort („müllsack“ → „abfallsack“), weil Abfallsäcke, Abfalleimer und Abfallhaufen
+  verschiedene Anliegen sind. Ersetzt werden nur ganze Wörter, „müllerstrasse“ bleibt erhalten.
 - Die Kategorie `service_code` hat nach der Kodierungsreparatur 11 Werte. Das
   Kategoriensystem hat sich über die Jahre verändert.
 
@@ -152,6 +156,14 @@ Das Skript extrahiert Themen mit NMF (auf TF-IDF) und KMeans (auf den Embeddings
 pro Verfahren eine Tabelle mit Themenwörtern und Anteilen nach `results/tables/`. Ein erster
 Blick auf die Themen steht in [notebooks/03_topics.ipynb](notebooks/03_topics.ipynb).
 
+Themen beschreiben, *was* gemeldet wird (den Gegenstand). *Wie* ein Problem beschrieben wird,
+erfassen drei Zustandsmerkmale (`states` in der Config): Dauer („seit 3 Wochen“, 9,5 % der
+Meldungen), Wiederholung („immer wieder“, 3,9 %) und Gefährdung („gefährlich“, 6,0 %). Die
+Tabellen zeigen pro Thema den Anteil der Meldungen mit dem jeweiligen Merkmal. Damit
+Zustandswörter wie „seit“ oder „nicht“ keine eigenen Themen bilden, sind sie keine
+TF-IDF-Merkmale, ebenso Wörter über die Meldung selbst („bitte“, „foto“) und reine Zahlen
+(`tfidf.exclude_words`, `tfidf.exclude_numbers`). Wortpaare mit Zahl wie „tempo 30“ bleiben.
+
 **Entwicklung und Tests:**
 
 ```bash
@@ -166,6 +178,6 @@ pytest
 - [x] Konzept
 - [x] Umgebung und Datendownload
 - [x] Vorverarbeitung
-- [ ] Vektorisierung
-- [ ] Themenextraktion und Evaluation
+- [x] Vektorisierung
+- [ ] Themenextraktion und Evaluation (erste Themen mit k = 10 vorhanden)
 - [ ] Ergebnisse und Diskussion
