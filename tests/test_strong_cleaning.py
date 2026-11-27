@@ -96,3 +96,27 @@ def test_english_words_keep_their_text(nlp):
     result = clean_one("The street lamp is broken since two weeks", nlp)
     assert "--" not in result.split()
     assert "street" in result.split()
+
+
+SYNONYMS = {"müll": "abfall", "müllsack": "abfallsack", "fahrrad": "velo"}
+
+
+@pytest.mark.parametrize(
+    ("lemma", "expected"),
+    [
+        ("Müll", "abfall"),
+        ("müllsack", "abfallsack"),
+        ("fahrräder", "velo"),  # lemma fix first, then the synonym
+        ("müllerstrasse", "müllerstrasse"),  # only whole words are replaced
+        ("lampe", "lampe"),
+    ],
+)
+def test_normalize_lemma_with_synonyms(lemma, expected):
+    assert normalize_lemma(lemma, {"fahrräder": "fahrrad"}, SYNONYMS) == expected
+
+
+def test_strong_clean_applies_synonyms(nlp):
+    result = strong_clean(["Müll an der Müllerstrasse"], nlp, [], 2, {}, SYNONYMS)[0].split()
+    assert "abfall" in result
+    assert "müll" not in result
+    assert "müllerstrasse" in result

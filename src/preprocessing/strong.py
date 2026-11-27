@@ -45,21 +45,26 @@ def strong_clean(
     keep_words: Iterable[str],
     batch_size: int,
     lemma_fixes: dict[str, str] | None = None,
+    synonyms: dict[str, str] | None = None,
 ) -> list[str]:
     """Return one string of lowercase lemmas per input text, in the same order.
 
     Example: "Die Lampen leuchten nicht." -> "lampe leuchten nicht"
     (with "nicht" in keep_words). Lemmas are normalized with normalize_lemma.
     `lemma_fixes` maps wrong lemmas to the correct form (after ß -> ss).
+    `synonyms` maps words to one common word ("müll" -> "abfall").
 
     nlp.pipe processes the texts in batches, which is much faster than
     calling nlp(text) for every text in a loop.
     """
     keep = frozenset(word.lower() for word in keep_words)
     fixes = lemma_fixes or {}
+    same = synonyms or {}
     return [
         " ".join(
-            normalize_lemma(lemma_or_text(token), fixes) for token in doc if keep_token(token, keep)
+            normalize_lemma(lemma_or_text(token), fixes, same)
+            for token in doc
+            if keep_token(token, keep)
         )
         for doc in nlp.pipe(texts, batch_size=batch_size)
     ]
@@ -76,11 +81,19 @@ def lemma_or_text(token: Token) -> str:
     return token.text
 
 
-def normalize_lemma(lemma: str, lemma_fixes: dict[str, str]) -> str:
-    """Lowercase, Swiss spelling and manual corrections for known lemmatizer errors.
+def normalize_lemma(
+    lemma: str, lemma_fixes: dict[str, str], synonyms: dict[str, str] | None = None
+) -> str:
+    """Lowercase, Swiss spelling, corrections for lemmatizer errors, then synonyms.
 
-    The model is trained on German newspaper texts: it turns Swiss "ss" into "ß"
+    The model is trained on German newspaper texts. It turns Swiss "ss" into "ß"
     ("Strasse" -> "straß") and does not know some Swiss words ("Velos" -> "velos").
+    Both lookups compare the whole word, like a key in a map. So "müll" becomes
+    "abfall", but "müllerstrasse" stays unchanged. A fixed lemma can then be
+    mapped by a synonym ("fahrräder" -> "fahrrad" -> "velo").
     """
     lemma = lemma.lower().replace("ß", "ss")
-    return lemma_fixes.get(lemma, lemma)
+    lemma = lemma_fixes.get(lemma, lemma)
+    if synonyms:
+        lemma = synonyms.get(lemma, lemma)
+    return lemma

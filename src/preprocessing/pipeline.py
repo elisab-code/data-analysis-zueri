@@ -55,6 +55,7 @@ def prepare(df: pd.DataFrame, text_column: str, pre_cfg: dict, nlp: Language) ->
         pre_cfg["keep_stopwords"],
         pre_cfg["spacy_batch_size"],
         pre_cfg.get("lemma_fixes"),
+        pre_cfg.get("synonyms"),
     )
     logger.info("Reports empty only after strong cleaning (kept): %d", (df["text_strong"] == "").sum())
 

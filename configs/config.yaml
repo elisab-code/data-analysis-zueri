@@ -81,9 +81,78 @@ preprocessing:
     velos: velo                # 1448 vs. 2745 "velo"
     schrottvelos: schrottvelo  # 75 vs. 424
     mülltonn: mülltonne        # 52 vs. 37
+    # Counts from 2026-11-27
+    lamp: lampe                # 160, from "Lampe"
+    strassenlatern: strassenlaterne  # 499 vs. 79
+    graffitis: graffiti        # 357, plural
+    grafitti: graffiti         # 170, typo
+    grafiti: graffiti          # 134, typo
+    kaputtes: kaputt           # 200, adjective forms
+    kaputter: kaputt           # 72
+    defektes: defekt           # 121
+    defekter: defekt           # 109
+    fahrräder: fahrrad         # 120, plural
+    abfallsäcke: abfallsack    # 187, plural
+    abfallhaufe: abfallhaufen  # 24
+    abfallberge: abfallberg    # 21, plural
+    fahrräd: fahrrad           # 232, from "Fahrräder"
+    motorräder: motorrad       # 162 vs. 224
+    äste: ast                  # 334 vs. 439
+    tigermück: tigermücke      # 62 vs. 449
+    mück: mücke                # 62 vs. 47
+    abgedrehen: abdrehen       # 270, from "abgedreht"
+    entsorgt: entsorgen        # 658, from "entsorgter Abfall" (adjective)
+    wilder: wild               # 68, from "wilder Müll"
+
+  # Synonyms mapped to one word (applied after lemma_fixes, whole words only).
+  # Unlike lemma_fixes this is an interpretation, so it is kept as a separate list.
+  # Only words that name the same thing. Compounds keep their second part
+  # ("müllsack" -> "abfallsack", not "abfall"), because waste bins, bags and
+  # piles are different concerns. Words that only contain a listed word stay
+  # unchanged (e.g. the street name "müllerstrasse").
+  synonyms:
+    # waste (Swiss: "Kehricht", "Littering" = waste left in public space)
+    müll: abfall               # 1633 vs. 6041 "abfall"
+    unrat: abfall              # 159
+    littering: abfall          # 520
+    kehricht: abfall           # 20
+    # waste bags
+    müllsack: abfallsack       # 54
+    kehrichtsack: abfallsack
+    # waste bins
+    mülleimer: abfalleimer     # 152 vs. 518
+    abfallkübel: abfalleimer   # 320
+    abfallbehälter: abfalleimer  # 91
+    abfallkorb: abfalleimer    # 16
+    # large waste containers
+    mülltonne: abfallcontainer   # 79 vs. 124
+    müllcontainer: abfallcontainer  # 55
+    # waste piles in the wrong place
+    müllhalde: abfallhaufen    # 103 vs. 103
+    mülldeponie: abfallhaufen  # 120
+    abfalldeponie: abfallhaufen  # 105
+    abfallberg: abfallhaufen   # 60 (+21 plural)
+    müllberg: abfallhaufen     # 18
+    müllentsorgung: abfallentsorgung  # 100 vs. 307
+    # bulky waste: kept apart from "abfall", it has its own collection
+    # and mostly means furniture or mattresses
+    sperrgut: sperrmüll        # 395 vs. 409
+    # bicycles
+    fahrrad: velo              # 612 (+352 plural forms) vs. 3635
+    veloschrott: schrottvelo   # 158 vs. 499
+    # Swiss diminutives
+    einkaufswägeli: einkaufswagen  # 242 vs. 249
+    möbeli: möbel              # 73 vs. 831
+    # street lighting
+    strassenlampe: lampe       # 665 vs. 737
+    strassenlaterne: lampe     # 79 (+499 lemma fix)
+    laterne: lampe             # 166
+    # graffiti
+    schmiererei: graffiti      # 245
+    sprayerei: graffiti        # 73
 
 tfidf:
-  # Single words and word pairs ("nicht mehr", "tempo 30")
+  # Single words and word pairs ("tempo 30", "lampe defekt")
   ngram_range: [1, 2]
   # Minimum number of reports a term must occur in. Without a limit there are
   # 491,060 terms, most of them typos or word pairs that occur only once.
