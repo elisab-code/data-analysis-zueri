@@ -244,8 +244,10 @@ topics:
   k_min: 5
   k_max: 40
   k_step: 5
-  # Number of topics for the first look, before the k scan
-  k_initial: 10
+  # Number of topics, chosen with the k scan (results/tables/k_scan.csv):
+  # highest NMF coherence (0.58), both methods stable (0.95 and 0.97).
+  # From k = 15 the KMeans stability drops to about 0.7.
+  k: 10
   n_top_words: 10
   # Example reports per topic in the notebook
   n_examples: 5

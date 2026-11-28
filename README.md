@@ -11,7 +11,7 @@ in der Verwaltung. Ein nicht durchgesetztes Halteverbot steht zum Beispiel unter
 Meldenden tatsächlich beschäftigt.
 
 Hochschulprojekt im Kurs *Projekt: Data Analysis* (IU Internationale Hochschule).
-Stand: Konzept abgeschlossen, Umsetzung in Arbeit.
+Stand: Umsetzung abgeschlossen, Finalisierung folgt.
 
 ## Daten
 
@@ -74,11 +74,76 @@ flowchart LR
 Nach der Bereinigung entstehen zwei Textfassungen. Die stark bereinigte (Lemmata, ohne
 Stoppwörter) wird mit TF-IDF vektorisiert und mit NMF in Themen zerlegt. Die leicht bereinigte
 wird mit einem mehrsprachigen Sentence-Transformer eingebettet und mit KMeans geclustert. Die
-Themenzahl wird über die Topic Coherence gewählt, die Häufigkeit eines Themas ergibt sich aus
-dem Anteil der zugeordneten Meldungen.
+Themenzahl wird über Kohärenz, Stabilität und Abdeckung gewählt, die Häufigkeit eines Themas
+ergibt sich aus dem Anteil der zugeordneten Meldungen.
 
 Verwendet werden Python 3.12, pandas, ftfy, spaCy, scikit-learn, sentence-transformers, gensim,
 matplotlib und seaborn.
+
+## Ergebnisse
+
+**Themenzahl: k = 10.** Bei zehn Themen erreicht NMF die höchste Kohärenz, und beide Verfahren
+bilden auf verschiedenen Stichproben fast dieselben Gruppen (Stabilität 0,95 und 0,97). Ab
+k = 15 sinkt die Stabilität von KMeans auf etwa 0,7, feinere Cluster hängen also stark davon ab,
+welche Meldungen in der Stichprobe sind. Die Kohärenz unterscheidet sich zwischen den k kaum und
+entscheidet allein nichts.
+
+![k-Scan: Kohärenz, Themenvielfalt, Stabilität, größtes Thema und Anteil ohne eindeutiges Thema für k = 5 bis 40](results/figures/k_scan.png)
+
+**Häufigste Themen.** Das häufigste Anliegen, das beide Verfahren finden, ist Abfall: Mindestens
+jede achte Meldung betrifft illegal entsorgten oder deponierten Abfall (12,6 % bei NMF, 13,2 % bei
+KMeans). Insgesamt beschreiben die zehn NMF-Themen 42 % der Meldungen eindeutig.
+
+Die Anteile der beiden Verfahren sind unterschiedlich zu lesen. Bei NMF zählen nur eindeutig
+zugeordnete Meldungen, die Werte sind also Untergrenzen. KMeans ordnet jede Meldung zu, seine
+Werte enthalten deshalb auch Meldungen, die nur ungefähr passen. Anteile an allen 79.136
+Meldungen ([NMF](results/tables/nmf_topics_k10.csv), [KMeans](results/tables/kmeans_topics_k10.csv)):
+
+| Thema | NMF | KMeans |
+|---|---|---|
+| Verkehr und Sicherheit (Autos, Velos, Fussgänger) | – | 17,7 % |
+| Abfall, illegal entsorgt oder deponiert | 12,6 % (2 Themen) | 13,2 % |
+| Schäden (Löcher, kaputt, beschädigt) | 3,4 % („defekt“) | 12,7 % |
+| Strassenbeleuchtung | 2,7 % | 8,2 % |
+| Velos, auch herrenlose und Schrottvelos | 6,1 % (2 Themen) | – |
+| Wasser, Brunnen, Abflüsse | – | 5,4 % |
+| Bäume und Äste | – | 4,8 % |
+| Graffiti | 4,2 % | 4,4 % |
+| Möbel und Sperrmüll | 1,0 % | 3,8 % |
+| Tafeln und Signale (verklebt, schräg, verdreht) | 3,6 % | – |
+| gemischt oder allgemein | 8,4 % | 29,8 % (2 Cluster) |
+| kein eindeutiges Thema | 58,0 % | – |
+
+Beide Verfahren finden Abfall, Graffiti, Möbel und Beleuchtung. Bei diesen Themen landen 75 bis
+89 % der Meldungen eines NMF-Themas im passenden KMeans-Cluster. Die Unterschiede folgen aus der
+Arbeitsweise:
+
+- **NMF gruppiert nach gemeinsamen Wörtern.** Themen mit eigenem Wortschatz wie Graffiti oder
+  Tafeln trennt es sauber. Ein gemeinsames Wort kann aber verschiedene Gegenstände verbinden: Das
+  Thema „defekt“ enthält neben anderen Schäden auch viele Lampen.
+- **KMeans gruppiert nach Bedeutung.** Es findet Themen mit wechselndem Wortschatz wie Verkehr
+  und Sicherheit, Wasser oder Bäume, die NMF bei k = 10 nicht zeigt. Dafür entstehen
+  Sammelcluster: Einer (15,0 %) besteht vor allem aus sehr kurzen Meldungen zu verschiedenen
+  Gegenständen (Median 2 Wörter).
+
+**Wie Probleme beschrieben werden.** Eine lange Dauer („seit Wochen“) wird vor allem bei Velos
+und herumstehenden Gegenständen genannt (24 % im NMF-Velothema, 26 % im KMeans-Cluster „stehen,
+liegen“, insgesamt 9,5 %). Gefährdung kommt am häufigsten im KMeans-Cluster Verkehr und
+Sicherheit vor (19 %, insgesamt 6,0 %), bei Graffiti, Abfall und Möbeln fast nie (unter 1 %).
+Wiederholung („immer wieder“) ist bei Abfall und Verkehr mit 7 % am häufigsten (insgesamt 3,9 %).
+
+**Grenzen.**
+
+- Für 58 % der Meldungen gibt es kein NMF-Thema, das sie eindeutig beschreibt. Sie sind nicht
+  kürzer als die übrigen, verwenden aber vermutlich einen vielfältigeren Wortschatz: KMeans ordnet
+  sie vor allem Verkehr und Sicherheit, Schäden und den Sammelclustern zu. Auch mit 40 Themen
+  bleiben es 33 %, mit einer halb so hohen Schwelle (0,05) noch 47 %.
+- KMeans ordnet jede Meldung zu, auch wenn sie in kein Cluster gut passt. Die Anteile wirken
+  dadurch genauer, als sie sind.
+- Die Kohärenz misst nur, ob Themenwörter gemeinsam vorkommen. Ob ein Thema verständlich ist,
+  zeigen erst Beispieltexte ([Notebook 03](notebooks/03_topics.ipynb), Abschnitt E5).
+- Die Zustandsmerkmale beruhen auf Wortmustern, ihre Treffsicherheit ist noch nicht an einer
+  Stichprobe geprüft.
 
 ## Projektstruktur
 
@@ -199,5 +264,6 @@ pytest
 - [x] Umgebung und Datendownload
 - [x] Vorverarbeitung
 - [x] Vektorisierung
-- [ ] Themenextraktion und Evaluation (erste Themen mit k = 10 vorhanden)
-- [ ] Ergebnisse und Diskussion
+- [x] Themenextraktion und Evaluation (k = 10)
+- [x] Ergebnisse und Diskussion (erste Fassung)
+- [ ] Finalisierung

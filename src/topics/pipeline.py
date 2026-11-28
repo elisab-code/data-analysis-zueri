@@ -1,7 +1,7 @@
 """Extract topics with both methods: NMF on TF-IDF and KMeans on embeddings.
 
 Run from the project root after the vectorization pipeline:
-    python -m src.topics.pipeline            # k from the config (k_initial)
+    python -m src.topics.pipeline            # k from the config (topics.k)
     python -m src.topics.pipeline --k 12
 
 Writes one table per method to results/tables/ (topic words, share of
@@ -77,11 +77,11 @@ def with_states(table: pd.DataFrame, labels, markers: pd.DataFrame) -> pd.DataFr
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--k", type=int, help="number of topics (default: topics.k_initial)")
+    parser.add_argument("--k", type=int, help="number of topics (default: topics.k)")
     args = parser.parse_args()
 
     cfg = load_config()
-    k = args.k or cfg["topics"]["k_initial"]
+    k = args.k or cfg["topics"]["k"]
     reports = load_processed(cfg)
     result = extract_topics(reports, cfg, k)
 
