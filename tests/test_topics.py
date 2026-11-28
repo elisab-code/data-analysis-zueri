@@ -114,5 +114,5 @@ def test_topic_table_sorted_with_no_topic_row():
     assert table["topic"].tolist() == [1, 0, NO_TOPIC]
     assert table["reports"].tolist() == [3, 1, 1]
     assert table.loc[0, "words"] == "lampe, defekt"
-    assert table.loc[2, "words"] == "(no topic)"
+    assert table.loc[2, "words"] == "(no clear topic)"
     assert table["share"].sum() == pytest.approx(1.0)

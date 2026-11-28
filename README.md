@@ -103,6 +103,10 @@ source .venv/Scripts/activate     # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+`requirements.txt` legt die direkt verwendeten Pakete fest. Exakt dieselbe Umgebung wie bei
+der Analyse, einschließlich aller indirekt installierten Pakete, ergibt
+`pip install -r requirements-lock.txt` (erstellt mit `pip freeze`).
+
 **Daten:** Der analysierte Datenstand vom 29.10.2026 liegt als
 [Release](https://github.com/elisab-code/data-analysis-zueri/releases/tag/data-2026-10-29)
 vor. Das Skript lädt ihn nach `data/raw/` und prüft die Prüfsumme:
@@ -163,6 +167,22 @@ Tabellen zeigen pro Thema den Anteil der Meldungen mit dem jeweiligen Merkmal. D
 Zustandswörter wie „seit“ oder „nicht“ keine eigenen Themen bilden, sind sie keine
 TF-IDF-Merkmale, ebenso Wörter über die Meldung selbst („bitte“, „foto“) und reine Zahlen
 (`tfidf.exclude_words`, `tfidf.exclude_numbers`). Wortpaare mit Zahl wie „tempo 30“ bleiben.
+
+NMF ordnet eine Meldung nur dann einem Thema zu, wenn das Thema einen ausreichenden Teil ihres
+TF-IDF-Vektors beschreibt (`topics.nmf.min_weight`). Die übrigen Meldungen erscheinen als
+„kein eindeutiges Thema“. KMeans ordnet jede Meldung dem nächsten Cluster zu.
+
+**Wahl der Themenzahl** (ca. 20 Minuten):
+
+```bash
+python -m src.evaluation.k_scan              # k = 5, 10, ..., 40 aus der Config
+python -m src.evaluation.k_scan --k 10 20    # nur diese Werte
+```
+
+Das Skript berechnet für beide Verfahren und jedes k die Kohärenz (c_v), die Themenvielfalt,
+die Stabilität über Stichproben (mittlerer ARI), den Anteil des größten Themas und den Anteil
+der Meldungen ohne eindeutiges Thema. Ergebnis: `results/tables/k_scan.csv` und
+`results/figures/k_scan.png`.
 
 **Entwicklung und Tests:**
 

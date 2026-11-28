@@ -15,20 +15,39 @@ NO_TOPIC = -1
 
 
 def fit_nmf(tfidf: csr_matrix, k: int, seed: int, init: str, max_iter: int) -> tuple[NMF, np.ndarray]:
-    """Fit NMF with k topics and return the model and W."""
+    """Fit NMF with k topics and return the model and W.
+
+    NMF as introduced by Lee and Seung (1999). scikit-learn fits it with
+    coordinate descent (its default solver), not with the multiplicative updates
+    of Lee and Seung. init "nndsvda": start from an SVD (Boutsidis and
+    Gallopoulos 2008), with zeros replaced by the mean of the data.
+    """
     model = NMF(n_components=k, init=init, max_iter=max_iter, random_state=seed)
     weights = model.fit_transform(tfidf)
     return model, weights
 
 
-def assign_topics(weights: np.ndarray) -> np.ndarray:
+def topic_contributions(model: NMF, weights: np.ndarray) -> np.ndarray:
+    """W scaled by the length of each topic's term vector (row of H).
+
+    The rows of H have different lengths, so raw weights of different topics
+    are not comparable. After scaling, a value is the length of the part of
+    the report's TF-IDF vector that the topic describes. A report vector has
+    length 1, so 0.3 means the topic describes a large part of the report.
+    """
+    return weights * np.linalg.norm(model.components_, axis=1)
+
+
+def assign_topics(weights: np.ndarray, min_weight: float = 0.0) -> np.ndarray:
     """Assign each report to the topic with the highest weight.
 
-    Reports whose weights are all zero (no TF-IDF term) get NO_TOPIC. Without
-    this check, argmax would silently assign them to topic 0.
+    Reports whose highest weight is zero (no TF-IDF term) or below min_weight
+    get NO_TOPIC: no topic describes them clearly. Without this check, argmax
+    would silently assign reports without any term to topic 0.
     """
     labels = weights.argmax(axis=1)
-    labels[weights.max(axis=1) == 0] = NO_TOPIC
+    best = weights.max(axis=1)
+    labels[(best == 0) | (best < min_weight)] = NO_TOPIC
     return labels
 
 

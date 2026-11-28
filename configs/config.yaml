@@ -236,22 +236,34 @@ results:
   assignments_file: results/cache/topics.parquet
   # Topic words and shares (no report texts, in the repo)
   tables_dir: results/tables
+  # Figures (in the repo)
+  figures_dir: results/figures
 
 topics:
-  # Range of the k scan (number of topics)
+  # k scan (number of topics): k_min, k_min + k_step, ..., k_max
   k_min: 5
-  k_max: 15
+  k_max: 40
+  k_step: 5
   # Number of topics for the first look, before the k scan
   k_initial: 10
   n_top_words: 10
   # Example reports per topic in the notebook
   n_examples: 5
-  seeds: null    # TODO: seeds for the stability check
+  # Stability check: both methods are fitted on random samples of the reports
+  # (one sample per seed) and the topic assignments of all reports are compared.
+  stability_seeds: [1, 2, 3]
+  stability_sample: 0.8
   nmf:
     # nndsvda: deterministic start from a matrix decomposition (SVD), recommended
-    # by scikit-learn for sparse data. TODO: revisit for the stability check.
+    # by scikit-learn for sparse data. The same data always gives the same topics,
+    # so the stability check varies the data (samples), not the start.
     init: nndsvda
     max_iter: 500
+    # A report gets a topic only if the topic describes at least this part of
+    # its TF-IDF vector (see topic_contributions). Below it: no clear topic.
+    # At k = 10, three quarters of the reports in the catch-all topic are below
+    # 0.06 and three quarters of the reports in the other topics are above 0.1.
+    min_weight: 0.1
   kmeans:
     # Number of runs with different start centers, the best one is kept
     n_init: 10

@@ -23,15 +23,19 @@ def top_terms(topic_term: np.ndarray, terms: Sequence[str], n: int) -> list[list
 def class_tfidf(
     texts: Sequence[str], labels: np.ndarray, n_clusters: int, vectorizer: TfidfVectorizer
 ) -> np.ndarray:
-    """Class-based TF-IDF (c-TF-IDF, as in BERTopic): one row of term weights per cluster.
+    """Class-based TF-IDF: one row of term weights per cluster.
 
+    c-TF-IDF from BERTopic (Grootendorst 2022). Only this part of BERTopic is
+    used, the clusters come from KMeans instead of UMAP and HDBSCAN.
     All texts of a cluster are treated as one document. A term gets a high weight
     if it is frequent in the cluster but rare in the other clusters:
         weight(t, c) = tf(t, c) * log(1 + A / f(t))
     tf(t, c): frequency of term t in cluster c, divided by the number of terms in c
     A: average number of terms per cluster, f(t): frequency of t in all clusters.
-    The vocabulary is taken from the fitted TF-IDF vectorizer, so both methods use
-    the same terms. Reports with NO_TOPIC are ignored.
+    Dividing by the number of terms in c does not change the order of the terms
+    within a cluster. The vocabulary is taken from the fitted TF-IDF vectorizer, so
+    both methods use the same terms, and A and f(t) count only these terms (single
+    words and word pairs). Reports with NO_TOPIC are ignored.
     """
     counter = CountVectorizer(
         vocabulary=vectorizer.vocabulary_,
@@ -61,13 +65,13 @@ def class_tfidf(
 def topic_table(labels: np.ndarray, words: list[list[str]]) -> pd.DataFrame:
     """One row per topic with number and share of reports and the topic words.
 
-    Sorted by size. Reports without topic (NO_TOPIC) are listed as the last row.
+    Sorted by size. Reports without a clear topic (NO_TOPIC) are listed as the last row.
     """
     counts = pd.Series(labels).value_counts()
     table = pd.DataFrame({"topic": counts.index, "reports": counts.to_numpy()})
     table["share"] = table["reports"] / len(labels)
     table["words"] = [
-        "(no topic)" if topic == NO_TOPIC else ", ".join(words[topic]) for topic in table["topic"]
+        "(no clear topic)" if topic == NO_TOPIC else ", ".join(words[topic]) for topic in table["topic"]
     ]
     table["is_topic"] = table["topic"] != NO_TOPIC
     table = table.sort_values(["is_topic", "reports", "topic"], ascending=[False, False, True])

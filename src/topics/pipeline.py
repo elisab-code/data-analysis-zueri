@@ -16,7 +16,7 @@ import pandas as pd
 
 from src.config import load_config, project_path
 from src.topics.kmeans import fit_kmeans
-from src.topics.nmf import assign_topics, fit_nmf
+from src.topics.nmf import NO_TOPIC, assign_topics, fit_nmf, topic_contributions
 from src.topics.states import state_markers, topic_states
 from src.topics.words import class_tfidf, top_terms, topic_table
 from src.vectorization.pipeline import embeddings_from_config, load_processed, tfidf_from_config
@@ -36,12 +36,16 @@ def extract_topics(reports: pd.DataFrame, cfg: dict, k: int) -> dict:
     vectorizer, tfidf = tfidf_from_config(reports, cfg)
     terms = vectorizer.get_feature_names_out()
 
-    nmf_model, nmf_weights = fit_nmf(
+    nmf_model, raw_weights = fit_nmf(
         tfidf, k, cfg["seed"], topics_cfg["nmf"]["init"], topics_cfg["nmf"]["max_iter"]
     )
-    nmf_labels = assign_topics(nmf_weights)
+    nmf_weights = topic_contributions(nmf_model, raw_weights)
+    nmf_labels = assign_topics(nmf_weights, topics_cfg["nmf"]["min_weight"])
     nmf_words = top_terms(nmf_model.components_, terms, n_words)
-    logger.info("NMF: %d iterations, %d reports without topic", nmf_model.n_iter_, (nmf_labels < 0).sum())
+    logger.info(
+        "NMF: %d iterations, %.1f %% of the reports without a clear topic",
+        nmf_model.n_iter_, 100 * (nmf_labels == NO_TOPIC).mean(),
+    )
 
     embeddings = embeddings_from_config(reports, cfg)
     kmeans_model, kmeans_labels = fit_kmeans(embeddings, k, cfg["seed"], topics_cfg["kmeans"]["n_init"])
@@ -56,7 +60,7 @@ def extract_topics(reports: pd.DataFrame, cfg: dict, k: int) -> dict:
         "tfidf": tfidf,
         "embeddings": embeddings,
         "nmf_model": nmf_model,
-        "nmf_weights": nmf_weights,
+        "nmf_weights": nmf_weights,  # scaled, see topic_contributions
         "nmf_labels": nmf_labels,
         "nmf_table": with_states(topic_table(nmf_labels, nmf_words), nmf_labels, markers),
         "kmeans_model": kmeans_model,

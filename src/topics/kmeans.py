@@ -13,6 +13,8 @@ from sklearn.cluster import KMeans
 def fit_kmeans(embeddings: np.ndarray, k: int, seed: int, n_init: int) -> tuple[KMeans, np.ndarray]:
     """Fit KMeans with k clusters and return the model and the cluster of each report.
 
+    KMeans (Lloyd 1982) with the scikit-learn default start "k-means++"
+    (Arthur and Vassilvitskii 2007), which spreads the start centers apart.
     n_init: number of runs with different start centers. The best run is kept.
     """
     model = KMeans(n_clusters=k, n_init=n_init, random_state=seed)
